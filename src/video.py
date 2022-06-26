@@ -16,18 +16,21 @@ class VideoRecorder(object):
         self.enabled = self.dir_name is not None and enabled
 
     def record(self, env, mode=None):
+        # if self.enabled:
+        #     frame = env.render(
+        #         mode='rgb_array',
+        #         height=self.height,
+        #         width=self.width,
+        #         camera_id=self.camera_id
+        #     )
+        #     if mode is not None and 'video' in mode:
+        #         _env = env
+        #         while 'video' not in _env.__class__.__name__.lower():
+        #             _env = _env.env
+        #         frame = _env.apply_to(frame)
+        #     self.frames.append(frame)
         if self.enabled:
-            frame = env.render(
-                mode='rgb_array',
-                height=self.height,
-                width=self.width,
-                camera_id=self.camera_id
-            )
-            if mode is not None and 'video' in mode:
-                _env = env
-                while 'video' not in _env.__class__.__name__.lower():
-                    _env = _env.env
-                frame = _env.apply_to(frame)
+            frame = env.render()
             self.frames.append(frame)
 
     def save(self, file_name):

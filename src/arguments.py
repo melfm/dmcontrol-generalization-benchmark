@@ -6,15 +6,15 @@ def parse_args():
 	parser = argparse.ArgumentParser()
 
 	# environment
-	parser.add_argument('--domain_name', default='walker')
-	parser.add_argument('--task_name', default='walk')
+	parser.add_argument('--domain_name', default='reacher')
+	parser.add_argument('--task_name', default='reach')
 	parser.add_argument('--frame_stack', default=3, type=int)
 	parser.add_argument('--action_repeat', default=4, type=int)
-	parser.add_argument('--episode_length', default=1000, type=int)
+	parser.add_argument('--episode_length', default=200, type=int)
 	parser.add_argument('--eval_mode', default='color_hard', type=str)
 	
 	# agent
-	parser.add_argument('--algorithm', default='sac', type=str)
+	parser.add_argument('--algorithm', default='svea', type=str)
 	parser.add_argument('--train_steps', default='500k', type=str)
 	parser.add_argument('--discount', default=0.99, type=float)
 	parser.add_argument('--init_steps', default=1000, type=int)
@@ -68,7 +68,7 @@ def parse_args():
 	# misc
 	parser.add_argument('--seed', default=None, type=int)
 	parser.add_argument('--log_dir', default='logs', type=str)
-	parser.add_argument('--save_video', default=False, action='store_true')
+	parser.add_argument('--save_video', default=True, action='store_true')
 
 	args = parser.parse_args()
 

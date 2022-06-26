@@ -5,7 +5,7 @@ import gym
 import utils
 import time
 from arguments import parse_args
-from env.wrappers import make_env
+from env.wrappers import make_env, make_robosuite_env
 from algorithms.factory import make_agent
 from logger import Logger
 from video import VideoRecorder
@@ -14,14 +14,16 @@ from video import VideoRecorder
 def evaluate(env, agent, video, num_episodes, L, step, test_env=False):
 	episode_rewards = []
 	for i in range(num_episodes):
-		obs = env.reset()
+		timestep = env.reset()
 		video.init(enabled=(i==0))
 		done = False
 		episode_reward = 0
 		while not done:
 			with utils.eval_mode(agent):
-				action = agent.select_action(obs)
-			obs, reward, done, _ = env.step(action)
+				action = agent.select_action(timestep.observation)
+			timestep = env.step(action)
+			reward = timestep.reward
+			done = timestep.last()
 			video.record(env)
 			episode_reward += reward
 
@@ -40,30 +42,47 @@ def main(args):
 
 	# Initialize environments
 	gym.logger.set_level(40)
-	env = make_env(
-		domain_name=args.domain_name,
-		task_name=args.task_name,
-		seed=args.seed,
-		episode_length=args.episode_length,
-		action_repeat=args.action_repeat,
-		image_size=args.image_size,
-		mode='train'
+	# env = make_env(
+	# 	domain_name=args.domain_name,
+	# 	task_name=args.task_name,
+	# 	seed=args.seed,
+	# 	episode_length=args.episode_length,
+	# 	action_repeat=args.action_repeat,
+	# 	image_size=args.image_size,
+	# 	mode='train'
+	# )
+	# test_env = make_env(
+	# 	domain_name=args.domain_name,
+	# 	task_name=args.task_name,
+	# 	seed=args.seed+42,
+	# 	episode_length=args.episode_length,
+	# 	action_repeat=args.action_repeat,
+	# 	image_size=args.image_size,
+	# 	mode=args.eval_mode,
+	# 	intensity=args.distracting_cs_intensity
+	# ) if args.eval_mode is not None else None
+
+	env = make_robosuite_env(
+		task_name=args.task_name
 	)
-	test_env = make_env(
-		domain_name=args.domain_name,
-		task_name=args.task_name,
-		seed=args.seed+42,
-		episode_length=args.episode_length,
-		action_repeat=args.action_repeat,
-		image_size=args.image_size,
-		mode=args.eval_mode,
-		intensity=args.distracting_cs_intensity
-	) if args.eval_mode is not None else None
+
+	# test_env = env
+	# test_env = make_env(
+	# 	domain_name=args.domain_name,
+	# 	task_name=args.task_name,
+	# 	seed=args.seed+42,
+	# 	episode_length=args.episode_length,
+	# 	action_repeat=args.action_repeat,
+	# 	image_size=args.image_size,
+	# 	mode=args.eval_mode,
+	# 	intensity=args.distracting_cs_intensity
+	# ) if args.eval_mode is not None else None
+
 
 	# Create working directory
 	work_dir = os.path.join(args.log_dir, args.domain_name+'_'+args.task_name, args.algorithm, str(args.seed))
 	print('Working directory:', work_dir)
-	assert not os.path.exists(os.path.join(work_dir, 'train.log')), 'specified working directory already exists'
+	# assert not os.path.exists(os.path.join(work_dir, 'train.log')), 'specified working directory already exists'
 	utils.make_dir(work_dir)
 	model_dir = utils.make_dir(os.path.join(work_dir, 'model'))
 	video_dir = utils.make_dir(os.path.join(work_dir, 'video'))
@@ -99,11 +118,12 @@ def main(args):
 
 			# Evaluate agent periodically
 			if step % args.eval_freq == 0:
+				eval_episodes = 2
 				print('Evaluating:', work_dir)
 				L.log('eval/episode', episode, step)
-				evaluate(env, agent, video, args.eval_episodes, L, step)
-				if test_env is not None:
-					evaluate(test_env, agent, video, args.eval_episodes, L, step, test_env=True)
+				evaluate(env, agent, video, eval_episodes, L, step)
+				# if test_env is not None:
+				# 	evaluate(test_env, agent, video, eval_episodes, L, step, test_env=True)
 				L.dump(step)
 
 			# Save agent periodically
@@ -112,7 +132,8 @@ def main(args):
 
 			L.log('train/episode_reward', episode_reward, step)
 
-			obs = env.reset()
+			timestep = env.reset()
+			obs = timestep.observation
 			done = False
 			episode_reward = 0
 			episode_step = 0
@@ -134,7 +155,11 @@ def main(args):
 				agent.update(replay_buffer, L, step)
 
 		# Take step
-		next_obs, reward, done, _ = env.step(action)
+		timestep = env.step(action)
+		reward = timestep.reward
+		next_obs = timestep.observation
+		done_bool = timestep.last()
+		done = timestep.last()
 		done_bool = 0 if episode_step + 1 == env._max_episode_steps else float(done)
 		replay_buffer.add(obs, action, reward, next_obs, done_bool)
 		episode_reward += reward
