@@ -86,7 +86,10 @@ def make_robosuite_env(task_name,
     env_kwargs['reward_shaping'] = True
     env_kwargs['control_freq'] = 5
     env_kwargs['horizon'] = 100
-    # import pdb;pdb.set_trace()
+    env_kwargs['hard_reset'] = False
+    env_kwargs['camera_widths'] = 84
+    env_kwargs['camera_heights'] = 84
+    env_kwargs['camera_names'] = 'frontview'
 
     env = robosuite.make(
         env_name=task_name,
