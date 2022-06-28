@@ -10,9 +10,9 @@ for SEED in 1; do
   sbatch run_cc_job_svea.sh 'Lift' 'sac' 200 'jaco_osc_pose_5hz' ${SEED}
   sbatch run_cc_job_svea.sh 'Lift' 'svea' 200 'jaco_osc_pose_5hz' ${SEED}
 
-  sbatch run_cc_job_svea.sh 'Lift' 'drq' 200 'jaco_osc_position_5hz_ac1' ${SEED}
-  sbatch run_cc_job_svea.sh 'Lift' 'sac' 200 'jaco_osc_position_5hz_ac1' ${SEED}
-  sbatch run_cc_job_svea.sh 'Lift' 'svea' 200 'jaco_osc_position_5hz_ac1' ${SEED}
+  sbatch run_cc_job_svea.sh 'Lift' 'drq' 200 'jaco_osc_position_5hz_kp_v2' ${SEED}
+  sbatch run_cc_job_svea.sh 'Lift' 'sac' 200 'jaco_osc_position_5hz_kp_v2' ${SEED}
+  sbatch run_cc_job_svea.sh 'Lift' 'svea' 200 'jaco_osc_position_5hz_kp_v2' ${SEED}
 done
 
 # for SEED in {1..3}; do

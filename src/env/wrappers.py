@@ -85,7 +85,7 @@ def make_robosuite_env(task_name,
     # shutil.copy(config_file, os.getcwd())
 
     randomize = randomize
-    env_kwargs['horizon'] = horizon
+    env_kwargs['horizon'] = int(horizon)
     env_kwargs['robots'] = 'Jaco'
     env_kwargs['reward_shaping'] = True
     env_kwargs['control_freq'] = 5
