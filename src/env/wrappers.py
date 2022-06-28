@@ -60,13 +60,15 @@ def make_env(domain_name,
 
 
 def make_robosuite_env(task_name,
+                       horizon,
+                       randomize=True,
                        seed=0,
-					   discount=0.99,
+                       discount=0.99,
                        frame_stack=3):
 
     env_kwargs = {}
 
-    task_name = 'Reach'
+    task_name = task_name
     controller_file = 'jaco_osc_pose_5hz.json'
     controller_fpath = os.path.join(
         os.path.split(robosuite.__file__)[0], 'controllers', 'config',
@@ -81,11 +83,11 @@ def make_robosuite_env(task_name,
     config_file = config_path + controller_file
     shutil.copy(config_file, os.getcwd())
 
-    randomize = False
+    randomize = randomize
+    env_kwargs['horizon'] = horizon
     env_kwargs['robots'] = 'Jaco'
     env_kwargs['reward_shaping'] = True
     env_kwargs['control_freq'] = 5
-    env_kwargs['horizon'] = 100
     env_kwargs['hard_reset'] = False
     env_kwargs['camera_widths'] = 84
     env_kwargs['camera_heights'] = 84
@@ -95,6 +97,7 @@ def make_robosuite_env(task_name,
         env_name=task_name,
         **env_kwargs,
     )
+
     if randomize:
         print('randomizing environment', seed)
         randomize_color = True
@@ -107,8 +110,6 @@ def make_robosuite_env(task_name,
         randomize_dynamics = False
         randomize_camera = False
         randomize_lighting = False
-
-
 
     env.camera_widths = [84]
     env.camera_heights = [84]
@@ -123,7 +124,6 @@ def make_robosuite_env(task_name,
         randomize_dynamics=randomize_dynamics,
         randomize_on_reset=True,
     )
-
 
     return env
 
