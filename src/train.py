@@ -64,6 +64,7 @@ def main(args):
 
     env = make_robosuite_env(task_name=args.task_name,
                              horizon=args.horizon,
+							 controller=args.controller,
                              randomize=args.randomize)
 
     # test_env = env
@@ -80,7 +81,7 @@ def main(args):
 
     # Create working directory
     work_dir = os.path.join(args.log_dir,
-                            args.domain_name + '_' + args.task_name,
+                            args.task_name + '_' + args.controller,
                             args.algorithm, str(args.seed))
     print('Working directory:', work_dir)
     # assert not os.path.exists(os.path.join(work_dir, 'train.log')), 'specified working directory already exists'

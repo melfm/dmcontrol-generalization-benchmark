@@ -9,6 +9,7 @@ def parse_args():
 	parser.add_argument('--domain_name', default='reacher')
 	parser.add_argument('--task_name', default='Reach')
 	parser.add_argument('--horizon', default=200)
+	parser.add_argument('--controller', default='jaco_osc_pose_5hz.json')
 	parser.add_argument('--randomize', default=True, action='store_true')
 	parser.add_argument('--frame_stack', default=3, type=int)
 	parser.add_argument('--action_repeat', default=4, type=int)

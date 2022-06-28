@@ -61,6 +61,7 @@ def make_env(domain_name,
 
 def make_robosuite_env(task_name,
                        horizon,
+					   controller,
                        randomize=True,
                        seed=0,
                        discount=0.99,
@@ -69,7 +70,7 @@ def make_robosuite_env(task_name,
     env_kwargs = {}
 
     task_name = task_name
-    controller_file = 'jaco_osc_pose_5hz.json'
+    controller_file = controller
     controller_fpath = os.path.join(
         os.path.split(robosuite.__file__)[0], 'controllers', 'config',
         controller_file)
@@ -81,7 +82,7 @@ def make_robosuite_env(task_name,
     robo_path = os.path.dirname(robosuite.__file__)
     config_path = robo_path + '/controllers/config/'
     config_file = config_path + controller_file
-    shutil.copy(config_file, os.getcwd())
+    # shutil.copy(config_file, os.getcwd())
 
     randomize = randomize
     env_kwargs['horizon'] = horizon

@@ -21,4 +21,4 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/melfm24/.mujoco/bin
 
 source ~/projects/def-dpmeger/melfm24/virtual_envs/jaco/bin/activate
 
-python train.py --task_name $1 --algorithm $2 horizon $3 --seed $4 --randomize
+python train.py --task_name $1 --algorithm $2 --horizon $3 --controller $4 --seed $5 --randomize
