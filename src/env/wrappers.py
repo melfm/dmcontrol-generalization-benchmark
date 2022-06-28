@@ -6,7 +6,7 @@ import gym
 import torch
 import torch.nn.functional as F
 import torchvision.transforms.functional as TF
-import dmc2gym
+# import dmc2gym
 import utils
 from collections import deque
 import robosuite
