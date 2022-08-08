@@ -70,7 +70,7 @@ def make_robosuite_env(task_name,
     env_kwargs = {}
 
     task_name = task_name
-    controller_file = controller + '.json'
+    controller_file = controller # + '.json'
     controller_fpath = os.path.join(
         os.path.split(robosuite.__file__)[0], 'controllers', 'config',
         controller_file)

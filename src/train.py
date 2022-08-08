@@ -65,7 +65,7 @@ def main(args):
     env = make_robosuite_env(task_name=args.task_name,
                              horizon=args.horizon,
 							 controller=args.controller,
-                             randomize=args.randomize)
+                             randomize=False)#args.randomize)
 
     # test_env = env
     # test_env = make_env(
